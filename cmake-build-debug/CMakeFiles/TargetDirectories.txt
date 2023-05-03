@@ -1,0 +1,3 @@
+C:/Users/12414/Desktop/code/clion/C/SnakeForWin/cmake-build-debug/CMakeFiles/SnakeForWin.dir
+C:/Users/12414/Desktop/code/clion/C/SnakeForWin/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/12414/Desktop/code/clion/C/SnakeForWin/cmake-build-debug/CMakeFiles/rebuild_cache.dir

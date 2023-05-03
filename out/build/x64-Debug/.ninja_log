@@ -1,0 +1,5 @@
+# ninja log v5
+3	2292	7047416069941037	CMakeFiles/SnakeForWin.dir/main.c.obj	e168026ad4bd7790
+13	2295	7047416069983600	CMakeFiles/SnakeForWin.dir/userData/userData.c.obj	4208913041f7864a
+10	2330	7047416070270146	CMakeFiles/SnakeForWin.dir/game/game.c.obj	9499ada9ecc01828
+2331	2480	7047416071739132	SnakeForWin.exe	9d5fb86890ca834d
