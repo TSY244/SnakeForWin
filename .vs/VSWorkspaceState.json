@@ -6,9 +6,8 @@
     ]
   },
   "ExpandedNodes": [
-    "",
-    "\\out\\build"
+    ""
   ],
-  "SelectedNode": "\\CMakeLists.txt",
+  "SelectedNode": "\\main.c",
   "PreviewInSolutionExplorer": false
 }

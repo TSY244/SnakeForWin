@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <conio.h>//getch()
+#include<mmsystem.h>
 
 #define ROW 44 //游戏区行数
 #define COL 84 //游戏区列数
@@ -61,6 +62,7 @@ void storeMax();
 
 void importMax();
 
+void ControlMusic();
 //关于蛇的
 void printSnake(int flag);
 

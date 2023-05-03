@@ -30,6 +30,7 @@ void menu() {
     /*
      *  description: 打印菜单
      */
+    ControlMusic(3);
     setColor(10);
     CursorJump(COL - 9, ROW / 2 - 5);
     printf("=== Menu ===\n");
@@ -65,8 +66,11 @@ void optionFunc() {
                 break;
             }
             case 1: {
+                ControlMusic(4);
+                ControlMusic(1);
                 runGame();
                 system("cls");
+                ControlMusic(2);
                 break;
             }
             case 2: {
@@ -223,6 +227,7 @@ void reGame(int *direction) {
      *  description: 重新开始游戏
      *  parameter: 因为重新开始游戏需要我们将方向也要初始化，所以选择传一个指针修改方向
      */
+    ControlMusic(1);
     system("cls");
     *direction = RIGHT;
     isKill = 1;
@@ -287,6 +292,8 @@ int gameOver() {
      * description: 游戏结束，打印死后的游戏数据；提供选择，是否继续
      * return：返回1，代表游戏死亡后选择重新开始游戏，2，代表返回菜单
      */
+    ControlMusic(2);
+    ControlMusic(5);
     system("cls");
     for (int i = 0; i < 5; ++i) {
         setColor(1 + i);
@@ -316,9 +323,11 @@ int gameOver() {
         switch (op) {
             case 'y':
             case 'Y':
+                ControlMusic(6);
                 return 1;
             case 'q':
             case 'Q':
+                ControlMusic(6);
                 if (maxScore < score) {
                     maxScore = score;
                 }
@@ -327,6 +336,7 @@ int gameOver() {
                 exit(0);
             case 'r':
             case 'R':
+                ControlMusic(6);
                 return 2;
             default:
                 CursorJump(COL - 15, ROW / 2);
@@ -409,6 +419,33 @@ int resetDirec(int *direction, int *tem) {
     }
     return 1;
 }
+
+void ControlMusic(int op) {
+    if(op==1){
+        mciSendString("open C:\\Users\\12414\\Desktop\\code\\clion\\C\\SnakeForWin\\SnakeGameMusic.mp3 alias begin",0,0,0);
+        mciSendString("seek begin to start",0,0,0);
+        mciSendString("play begin",0,0,0);
+    }else if(op==2){
+        mciSendString("stop begin",0,0,0);
+    }else if(op==3){
+        mciSendString("open C:\\Users\\12414\\Desktop\\code\\clion\\C\\SnakeForWin\\meun.wav alias menu",0,0,0);
+/*
+        mciSendString("seek menu to start",0,0,0);
+*/
+        mciSendString("play menu",0,0,0);
+    }else if(op==4){
+        mciSendString("pause menu ",0,0,0);
+    }else if(op==5){
+        mciSendString("open C:\\Users\\12414\\Desktop\\code\\clion\\C\\SnakeForWin\\fail.wav alias fail",0,0,0);
+        mciSendString("seek fail to start",0,0,0);
+        mciSendString("play fail",0,0,0);
+    }else if(op==6){
+        mciSendString("pause fail ",0,0,0);
+
+    }
+
+}
+
 
 //与蛇相关
 void InitSnake() {

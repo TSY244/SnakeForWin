@@ -77,7 +77,7 @@ build CMakeFiles/SnakeForWin.dir/userData/userData.c.obj: C_COMPILER__SnakeForWi
 
 build SnakeForWin.exe: C_EXECUTABLE_LINKER__SnakeForWin_Debug CMakeFiles/SnakeForWin.dir/main.c.obj CMakeFiles/SnakeForWin.dir/game/game.c.obj CMakeFiles/SnakeForWin.dir/userData/userData.c.obj
   FLAGS = -g
-  LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = -lwinmm  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\SnakeForWin.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
