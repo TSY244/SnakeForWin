@@ -264,6 +264,12 @@ int judge(int x, int y) {
      * description: 判断蛇行进的方向上下一个方块是什么
      * return：3，代表吃到食物；gameOver(),可以返回1，代表游戏死亡后选择重新开始游戏，2，代表返回菜单；返回0则是KONG
      */
+    char buffer[BUFSIZ]={0};
+    mciSendString("status begin mode", buffer, sizeof(buffer), 0);
+    if (strcmp(buffer, "stopped") == 0) {
+        // 歌曲播放完毕
+        ControlMusic(1);
+    }
     if (face[head.x + x][head.y + y] == FOOD) {
         if (score % 30 == 0 && runTime > 0 && score > 0) {
             runTime -= 1;
@@ -422,13 +428,13 @@ int resetDirec(int *direction, int *tem) {
 
 void ControlMusic(int op) {
     if(op==1){
-        mciSendString("open C:\\Users\\12414\\Desktop\\code\\clion\\C\\SnakeForWin\\SnakeGameMusic.mp3 alias begin",0,0,0);
+        mciSendString("open ../music/SnakeGameMusic.mp3 alias begin",0,0,0);
         mciSendString("seek begin to start",0,0,0);
         mciSendString("play begin",0,0,0);
     }else if(op==2){
         mciSendString("stop begin",0,0,0);
     }else if(op==3){
-        mciSendString("open C:\\Users\\12414\\Desktop\\code\\clion\\C\\SnakeForWin\\meun.wav alias menu",0,0,0);
+        mciSendString("open ../music/meun.wav alias menu",0,0,0);
 /*
         mciSendString("seek menu to start",0,0,0);
 */
@@ -436,7 +442,7 @@ void ControlMusic(int op) {
     }else if(op==4){
         mciSendString("pause menu ",0,0,0);
     }else if(op==5){
-        mciSendString("open C:\\Users\\12414\\Desktop\\code\\clion\\C\\SnakeForWin\\fail.wav alias fail",0,0,0);
+        mciSendString("open ../music/fail.wav alias fail",0,0,0);
         mciSendString("seek fail to start",0,0,0);
         mciSendString("play fail",0,0,0);
     }else if(op==6){
@@ -577,7 +583,7 @@ int autoRun(int direction) {
             t = runTime;
         }
         if (t--) {
-            Sleep(5);
+            Sleep(20);
         }
         if (t == 0) {
             switch (direction) {
