@@ -447,7 +447,6 @@ void ControlMusic(int op) {
         mciSendString("play fail",0,0,0);
     }else if(op==6){
         mciSendString("pause fail ",0,0,0);
-
     }
 
 }

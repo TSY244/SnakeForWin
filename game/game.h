@@ -14,6 +14,8 @@
 #include <conio.h>//getch()
 #include<mmsystem.h>
 
+#pragma comment(lib, "Winmm.lib")
+
 #define ROW 44 //游戏区行数
 #define COL 84 //游戏区列数
 
