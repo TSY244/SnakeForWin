@@ -11,14 +11,20 @@
 void setRandomNum();
 
 int main(){
+    ControlMusic(7);
+    importDate();
     //导入最大值
-    importMax();
     setRandomNum();
-/*    PrintLoginInterface();*/
     //初始化cmd
     initConsole();
+
+    ChooseLogOrRegister();
+    importMax(GetMaxSoc());
     //游戏选择
+    ControlMusic(8);
     optionFunc();
+    savaData();
+    DestroyUserList();
     return 0;
 }
 

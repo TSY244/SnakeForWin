@@ -5,6 +5,9 @@
 
 #include "game.h"
 
+extern void (*savaData)();
+
+
 struct snakeHead {
     int x;
     int y;
@@ -18,7 +21,7 @@ struct snakeBody {
 
 
 int score = 0;
-int maxScore = 0;
+int *maxScore = 0;
 int face[COL][ROW] = {KONG};//状态变量，该位置属于什么
 int runTime = 10;//蛇自动移动的速度，越小越快
 int isKill = 0; //判断是否是reGame的
@@ -54,7 +57,6 @@ void optionFunc() {
      *  description: 用于提供选择界面
      */
     int op;
-    int n;
     do {
         menu();
         CursorJump(COL + 10, ROW / 2 + 1);
@@ -68,7 +70,9 @@ void optionFunc() {
             case 1: {
                 ControlMusic(4);
                 ControlMusic(1);
-                runGame();
+                if(runGame()==2){
+                    return;
+                }
                 system("cls");
                 ControlMusic(2);
                 break;
@@ -106,7 +110,7 @@ void optionFunc() {
                 break;
             }
             default: {
-                CursorJump(COL - 9, ROW / 2 + 1);
+                CursorJump(COL - 9, ROW / 2 );
                 printf("input error,please input again");
                 break;
             }
@@ -127,8 +131,10 @@ int runGame() {
     printFood();
     InitSnake();
     printSnake(1);
-    controlSnake();
-    return 1;
+    if(controlSnake()==1){
+        return 1;
+    }
+    return 2;
 }
 
 void printFood() {
@@ -136,8 +142,8 @@ void printFood() {
      *  description: 打印食物，提供两种食物，一个加10分，buff food 加20
      *  more information: 后续考虑添加其他buff food 比如增加声明
      */
-    int x = 0;
-    int y = 0;
+    int x;
+    int y;
     do {
         x = rand() % COL;
         y = rand() % ROW;
@@ -183,7 +189,7 @@ void printBorder() {
     CursorJump(0, ROW);
     printf("Score:%d", score);
     CursorJump(COL, ROW);
-    printf(" The highest score is :%d", maxScore);
+    printf(" The highest score is :%d", *maxScore);
 }
 
 void initConsole() {
@@ -232,8 +238,8 @@ void reGame(int *direction) {
     *direction = RIGHT;
     isKill = 1;
     runTime = 10;
-    if (score > maxScore) {
-        maxScore = score;
+    if (score > *maxScore) {
+        *maxScore = score;
     }
     score = 0;
     resetFace();
@@ -262,9 +268,9 @@ void printGameOver() {
 int judge(int x, int y) {
     /*
      * description: 判断蛇行进的方向上下一个方块是什么
-     * return：3，代表吃到食物；gameOver(),可以返回1，代表游戏死亡后选择重新开始游戏，2，代表返回菜单；返回0则是KONG
+     * return：3，代表吃到食物；gameOver(),可以返回1，代表游戏死亡后选择重新开始游戏，2，代表返回菜单；返回0则是KONG，4代表推出以游戏
      */
-    char buffer[BUFSIZ]={0};
+    char buffer[BUFSIZ] = {0};
     mciSendString("status begin mode", buffer, sizeof(buffer), 0);
     if (strcmp(buffer, "stopped") == 0) {
         // 歌曲播放完毕
@@ -296,7 +302,7 @@ int judge(int x, int y) {
 int gameOver() {
     /*
      * description: 游戏结束，打印死后的游戏数据；提供选择，是否继续
-     * return：返回1，代表游戏死亡后选择重新开始游戏，2，代表返回菜单
+     * return：返回1，代表游戏死亡后选择重新开始游戏，2，代表返回菜单，4，代表退出游戏
      */
     ControlMusic(2);
     ControlMusic(5);
@@ -313,10 +319,10 @@ int gameOver() {
     CursorJump(COL - 15, ROW / 2 - 5);
     printf("Your score is: %d", score);
     CursorJump(COL - 15, ROW / 2 - 4);
-    if (score > maxScore) {
+    if (score > *maxScore) {
         printf("The highest score is: %d", score);
     } else {
-        printf("The highest score is: %d", maxScore);
+        printf("The highest score is: %d", *maxScore);
     }
     CursorJump(COL - 15, ROW / 2 - 3);
     printf("If you want to play one more game press 'y' ");
@@ -325,7 +331,8 @@ int gameOver() {
     do {
         CursorJump(COL - 15, ROW / 2 - 1);
         printf("To exit, press 'q' >: ");
-        op = getch();
+        while(getchar()!='\n'){}
+        op = getchar();
         switch (op) {
             case 'y':
             case 'Y':
@@ -334,14 +341,16 @@ int gameOver() {
             case 'q':
             case 'Q':
                 ControlMusic(6);
-                if (maxScore < score) {
-                    maxScore = score;
+                if (*maxScore < score) {
+                    *maxScore = score;
                 }
                 printGameOver();
-                storeMax();
-                exit(0);
+                return 4;
             case 'r':
             case 'R':
+                if (*maxScore < score) {
+                    *maxScore = score;
+                }
                 ControlMusic(6);
                 return 2;
             default:
@@ -364,34 +373,13 @@ void resetFace() {
     }
 }
 
-void storeMax() {
-    /*
-     * description: 存储maxStore
-     */
-    FILE *file = fopen("maxScore.txt", "wb+");
-    if (file == NULL) {
-        system("cls");
-        setColor(3);
-        CursorJump(COL - 9, ROW / 2 - 2);
-        printf(" memory error ！");
-        Sleep(1000);
-        exit(0);
-    }
-    fwrite(&maxScore, sizeof(maxScore), 1, file);
-    fclose(file);
-}
 
-void importMax() {
+void importMax(int *getMaxSco) {
     /*
      * description: 引入store
      */
-    FILE *file = fopen("maxScore.txt", "rb");
-    if (file == NULL) {
-        storeMax();
-    }/*
-    fscanf(file, "%d", &maxScore);*/
-    fread(&maxScore, sizeof(maxScore), 1, file);
-    fclose(file);
+
+    maxScore = getMaxSco;
 }
 
 int resetDirec(int *direction, int *tem) {
@@ -427,26 +415,32 @@ int resetDirec(int *direction, int *tem) {
 }
 
 void ControlMusic(int op) {
-    if(op==1){
-        mciSendString("open ../music/SnakeGameMusic.mp3 alias begin",0,0,0);
-        mciSendString("seek begin to start",0,0,0);
-        mciSendString("play begin",0,0,0);
-    }else if(op==2){
-        mciSendString("stop begin",0,0,0);
-    }else if(op==3){
-        mciSendString("open ../music/meun.wav alias menu",0,0,0);
+    if (op == 1) {
+        mciSendString("open ../music/SnakeGameMusic.wav alias begin", 0, 0, 0);
+        mciSendString("seek begin to start", 0, 0, 0);
+        mciSendString("play begin", 0, 0, 0);
+    } else if (op == 2) {
+        mciSendString("stop begin", 0, 0, 0);
+    } else if (op == 3) {
+        mciSendString("open ../music/meun.wav alias menu", 0, 0, 0);
 /*
         mciSendString("seek menu to start",0,0,0);
 */
-        mciSendString("play menu",0,0,0);
-    }else if(op==4){
-        mciSendString("pause menu ",0,0,0);
-    }else if(op==5){
-        mciSendString("open ../music/fail.wav alias fail",0,0,0);
-        mciSendString("seek fail to start",0,0,0);
-        mciSendString("play fail",0,0,0);
-    }else if(op==6){
-        mciSendString("pause fail ",0,0,0);
+        mciSendString("play menu", 0, 0, 0);
+    } else if (op == 4) {
+        mciSendString("pause menu ", 0, 0, 0);
+    } else if (op == 5) {
+        mciSendString("open ../music/fail.wav alias fail", 0, 0, 0);
+        mciSendString("seek fail to start", 0, 0, 0);
+        mciSendString("play fail", 0, 0, 0);
+    } else if (op == 6) {
+        mciSendString("pause fail ", 0, 0, 0);
+    }else if(op==7){
+        mciSendString("open ../music/log_in.wav alias login", 0, 0, 0);
+        mciSendString("seek login to start", 0, 0, 0);
+        mciSendString("play login", 0, 0, 0);
+    }else if(op==8){
+        mciSendString("pause login ", 0, 0, 0);
     }
 
 }
@@ -484,7 +478,7 @@ void printSnake(int flag) {
             CursorJump(2 * body[i].x, body[i].y);
             printf("□");
         }
-    } else{ //覆盖蛇
+    } else { //覆盖蛇
         if (2 * body[head.len - 1].x != 0 && body[head.len - 1].y != 0) {
             CursorJump(2 * body[head.len - 1].x, body[head.len - 1].y);
             printf("  ");
@@ -492,16 +486,20 @@ void printSnake(int flag) {
     }
 }
 
-void controlSnake() {
+int controlSnake() {
     /*
      * description: 如果用户按下了与蛇行进方向相反的方向，则重新设置一下
+     * return: 返回1代表返回菜单，返回2代表退出游戏
      */
     int direction = RIGHT;
     int tem = direction;
     int ifContinue = 0;
     while (1) {
-        if (autoRun(direction) == 0) {
+        int op=autoRun(direction);
+        if (op==0) {
             goto END;
+        }else if(op==2){
+            goto EXIT;
         }
         direction = getch();
         if (direction == 224 || direction == 13) {
@@ -520,6 +518,8 @@ void controlSnake() {
                     reGame(&direction);
                 } else if (ifContinue == 2) {
                     goto END;
+                } else if (ifContinue == 4) {
+                    goto EXIT;
                 }
                 break;
             case RIGHT:
@@ -528,6 +528,8 @@ void controlSnake() {
                     reGame(&direction);
                 } else if (ifContinue == 2) {
                     goto END;
+                } else if (ifContinue == 4) {
+                    goto EXIT;
                 }
                 break;
             case UP:
@@ -536,6 +538,8 @@ void controlSnake() {
                     reGame(&direction);
                 } else if (ifContinue == 2) {
                     goto END;
+                } else if (ifContinue == 4) {
+                    goto EXIT;
                 }
                 break;
             case DOWN:
@@ -544,6 +548,8 @@ void controlSnake() {
                     reGame(&direction);
                 } else if (ifContinue == 2) {
                     goto END;
+                } else if (ifContinue == 4) {
+                    goto EXIT;
                 }
                 break;
             case 'r':
@@ -555,16 +561,18 @@ void controlSnake() {
                 getch();
                 break;
             case ESC:
-                if (score > maxScore) {
-                    maxScore = score;
+                if (score > *maxScore) {
+                    *maxScore = score;
                 }
-                storeMax();
+                savaData();
                 printGameOver();
-                exit(0);
+                goto EXIT;
         }
     }
     END:
-    return;
+    return 1;
+    EXIT:
+    return 2;
 }
 
 int autoRun(int direction) {
@@ -592,6 +600,8 @@ int autoRun(int direction) {
                         reGame(&direction);//在gameOver 界面直接重新开始
                     } else if (ifContinue == 2) {
                         goto END;//返回菜单，相当于结束函数，重新调用
+                    }else if (ifContinue == 4) {
+                        goto EXIT;
                     }
                     break;
                 case RIGHT:
@@ -600,6 +610,8 @@ int autoRun(int direction) {
                         reGame(&direction);
                     } else if (ifContinue == 2) {
                         goto END;
+                    }else if (ifContinue == 4) {
+                        goto EXIT;
                     }
                     break;
                 case UP:
@@ -608,6 +620,8 @@ int autoRun(int direction) {
                         reGame(&direction);
                     } else if (ifContinue == 2) {
                         goto END;
+                    }else if (ifContinue == 4) {
+                        goto EXIT;
                     }
                     break;
                 case DOWN:
@@ -616,6 +630,8 @@ int autoRun(int direction) {
                         reGame(&direction);
                     } else if (ifContinue == 2) {
                         goto END;
+                    }else if (ifContinue == 4) {
+                        goto EXIT;
                     }
                     break;
             }
@@ -624,6 +640,8 @@ int autoRun(int direction) {
     return 1;//正常结束
     END:
     return 0;//返回菜单
+    EXIT:
+    return 2;//退出游戏
 }
 
 int snakeMove(int x, int y) {
@@ -636,6 +654,8 @@ int snakeMove(int x, int y) {
         return 2;
     } else if (op == 1) {
         return 1;
+    } else if (op == 4) {
+        return 4;//表示退出
     }
     printSnake(0);//覆盖
     face[body[head.len - 1].x][body[head.len - 1].y] = KONG;
@@ -659,8 +679,8 @@ void selectSkin() {
      * description: 提供皮肤选择功能
      */
     system("cls");
-    int skinNum = maxScore / 100 % 8 + 1;
-    if (maxScore >= 700) {
+    int skinNum = *maxScore / 100 % 8 + 1;
+    if (*maxScore >= 700) {
         skinNum = 8;
     }
     int i = 0;
