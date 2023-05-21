@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/12414/Desktop/code/clion/C/SnakeForWin
+# Install script for directory: D:/code/clion/C/SnakeForWin
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/12414/Desktop/code/clion/C/SnakeForWin/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/code/clion/C/SnakeForWin/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

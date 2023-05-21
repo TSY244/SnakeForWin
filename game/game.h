@@ -36,45 +36,48 @@ void menu();//菜单
 
 void optionFunc();//提供选择，打印菜单
 
-void initConsole();//初始化cmd
+void InitConsole();//初始化cmd
 
 void CursorJump(int x, int y);//光标跳转
 
-int runGame();//运行游戏本体
+int RunGame();//运行游戏本体
 
-void printBorder();//打印期盼
+void PrintBorder();//打印棋盘
 
-void setColor(int color);//设置颜色，蛇，菜单，边框等
+void SetColor(int color);//设置颜色，蛇，菜单，边框等
 
-void printFood();//打印食物
+void PrintFood();//打印食物
 
 int judge(int x, int y);//判断后面一个的东西
 
-int resetDirec(int *direction, int *tem);//如果用户按下了与蛇行进方向相反的方向，则重新设置一下
+int ResetDirec(int *direction, int *tem);//如果用户按下了与蛇行进方向相反的方向，则重新设置一下
 
-int gameOver();//游戏借宿
+int gameOver();//游戏结束
 
-void reGame(int *direction);//重新开始游戏，相当于对游戏在进行一次初始化，放进一个函数，方便调用
+void ReGame(int *direction);//重新开始游戏，相当于对游戏在进行一次初始化，放进一个函数，方便调用
 
-void printGameOver();
+void PrintGameOver();
 
-void resetFace();
+void ResetFace();
 
-void storeMax();
+void ImportMax(int *getMaxSco);
 
-void importMax();
+void ControlMusic(int op);
 
-void ControlMusic();
+/*void SelectMode();*/
+
+
+
 //关于蛇的
-void printSnake(int flag);
+void PrintSnake(int flag);
 
 void InitSnake();
 
-int snakeMove(int x, int y);
+int SnakeMove(int x, int y);
 
-void controlSnake();
+int ControlSnake();
 
-int autoRun(int direction);
+int AutoRun(int direction);
 
-void selectSkin();
+void SelectSkin();
 #endif //SNAKEFORWIN_GAME_H
