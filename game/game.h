@@ -60,11 +60,10 @@ void printGameOver();
 
 void resetFace();
 
-void storeMax();
 
-void importMax();
+void importMax(int *getMaxSco);
 
-void ControlMusic();
+void ControlMusic(int op);
 //关于蛇的
 void printSnake(int flag);
 
@@ -72,7 +71,7 @@ void InitSnake();
 
 int snakeMove(int x, int y);
 
-void controlSnake();
+int controlSnake();
 
 int autoRun(int direction);
 
